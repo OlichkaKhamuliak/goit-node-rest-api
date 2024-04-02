@@ -6,105 +6,80 @@ import {
   updateOneContact,
 } from "../services/contactsServices.js";
 
-import HttpError from "../helpers/HttpError.js";
 import {
   createContactSchema,
   updateContactSchema,
 } from "../schemas/contactsSchemas.js";
+import HttpError from "../helpers/HttpError.js";
+import { catchAsync } from "../helpers/catchAsync.js";
 
-export const getAllContacts = async (req, res) => {
-  try {
-    const contactsList = await listContacts();
+export const getAllContacts = catchAsync(async (req, res) => {
+  const contactsList = await listContacts();
 
-    res.status(200).json({
-      message: "success!",
-      contactsList,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+  res.status(200).json({
+    message: "success!",
+    contactsList,
+  });
+});
 
-export const getOneContact = async (req, res) => {
+export const getOneContact = catchAsync(async (req, res) => {
   const contactId = req.params.id;
-  try {
-    const oneContact = await getContactById(contactId);
-    if (!oneContact) {
-      res.status(404).json({ message: "Not found" });
-      return;
-    }
-
-    res.status(200).json({
-      message: "success!",
-      oneContact,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  const oneContact = await getContactById(contactId);
+  if (!oneContact) {
+    throw HttpError(404);
   }
-};
 
-export const deleteContact = async (req, res) => {
+  res.status(200).json({
+    message: "success!",
+    oneContact,
+  });
+});
+
+export const deleteContact = catchAsync(async (req, res) => {
   const contactId = req.params.id;
 
-  try {
-    const deleteContact = await removeContact(contactId);
-    if (!deleteContact) {
-      res.status(404).json({ message: "Not found" });
-      return;
-    }
-    res.status(200).json({
-      message: "success!",
-      deleteContact,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  const deleteContact = await removeContact(contactId);
+  if (!deleteContact) {
+    throw HttpError(404);
   }
-};
+  res.status(200).json({
+    message: "success!",
+    deleteContact,
+  });
+});
 
-export const createContact = async (req, res) => {
+export const createContact = catchAsync(async (req, res, next) => {
   const { value, errors } = createContactSchema(req.body);
 
   if (errors) {
-    res.status(400).json({ message: errors });
-    return;
+    return next(HttpError(400, errors));
   }
 
-  try {
-    const { name, email, phone } = value;
-    const newContact = await addContact(name, email, phone);
+  const { name, email, phone } = value;
+  const newContact = await addContact(name, email, phone);
 
-    res.status(201).json({
-      msg: "success!",
-      user: newContact,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+  res.status(201).json({
+    msg: "success!",
+    user: newContact,
+  });
+});
 
-export const updateContact = async (req, res) => {
+export const updateContact = catchAsync(async (req, res, next) => {
   const contactId = req.params.id;
   const newData = req.body;
   if (Object.keys(newData).length === 0) {
-    res.status(400).json({ message: "Body must have at least one field" });
-    return;
+    return next(HttpError(400, "Body must have at least one field"));
   }
   const { errors } = updateContactSchema(newData);
   if (errors) {
-    res.status(400).json({ message: errors });
-    return;
+    return next(HttpError(400, errors));
   }
-  try {
-    const updatedContact = await updateOneContact(contactId, newData);
-    if (!updatedContact) {
-      res.status(404).json({ message: "Not found" });
-      return;
-    }
-    res.status(200).json({
-      message: "success!",
-      updatedContact,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  const updatedContact = await updateOneContact(contactId, newData);
+  if (!updatedContact) {
+    throw HttpError(404);
   }
-};
+  res.status(200).json({
+    message: "success!",
+    updatedContact,
+  });
+});
