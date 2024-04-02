@@ -63,7 +63,7 @@ export async function updateOneContact(contactId, newData) {
     const index = contacts.findIndex((contact) => contact.id === contactId);
 
     if (index === -1) {
-      throw new Error("Contact not found");
+      return undefined;
     }
 
     const updatedContact = { ...contacts[index], ...newData };
