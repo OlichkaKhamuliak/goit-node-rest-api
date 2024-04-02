@@ -1,30 +1,25 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { nanoid } from "nanoid";
+import { handleAsync } from "../helpers/handleAsync.js";
 
 export const contactsPath = path.join("db", "contacts.json");
 
-export async function listContacts() {
-  try {
+export const listContacts = () =>
+  handleAsync(async () => {
     const readContacts = await fs.readFile(contactsPath);
     return JSON.parse(readContacts);
-  } catch (error) {
-    throw error;
-  }
-}
+  });
 
-export async function getContactById(contactId) {
-  try {
+export const getContactById = (contactId) =>
+  handleAsync(async () => {
     const contacts = await listContacts();
     const contact = contacts.find((contact) => contact.id === contactId);
     return contact || null;
-  } catch (error) {
-    throw error;
-  }
-}
+  });
 
-export async function removeContact(contactId) {
-  try {
+export const removeContact = (contactId) =>
+  handleAsync(async () => {
     const contacts = await listContacts();
     const removedContact = contacts.find((contact) => contact.id === contactId);
     if (!removedContact) {
@@ -35,13 +30,10 @@ export async function removeContact(contactId) {
     );
     await fs.writeFile(contactsPath, JSON.stringify(updatedContacts));
     return removedContact;
-  } catch (error) {
-    throw error;
-  }
-}
+  });
 
-export async function addContact(name, email, phone) {
-  try {
+export const addContact = (name, email, phone) =>
+  handleAsync(async () => {
     const contacts = await listContacts();
     const newContact = {
       id: nanoid(),
@@ -52,13 +44,10 @@ export async function addContact(name, email, phone) {
     contacts.push(newContact);
     await fs.writeFile(contactsPath, JSON.stringify(contacts));
     return newContact;
-  } catch (error) {
-    throw error;
-  }
-}
+  });
 
-export async function updateOneContact(contactId, newData) {
-  try {
+export const updateOneContact = (contactId, newData) =>
+  handleAsync(async () => {
     const contacts = await listContacts();
     const index = contacts.findIndex((contact) => contact.id === contactId);
 
@@ -72,7 +61,4 @@ export async function updateOneContact(contactId, newData) {
     await fs.writeFile(contactsPath, JSON.stringify(contacts));
 
     return updatedContact;
-  } catch (error) {
-    throw error;
-  }
-}
+  });
