@@ -25,9 +25,6 @@ export const getAllContacts = catchAsync(async (req, res) => {
 export const getOneContact = catchAsync(async (req, res) => {
   const contactId = req.params.id;
   const oneContact = await getContactById(contactId);
-  if (!oneContact) {
-    throw HttpError(404);
-  }
 
   res.status(200).json({
     message: "success!",
@@ -39,9 +36,7 @@ export const deleteContact = catchAsync(async (req, res) => {
   const contactId = req.params.id;
 
   const deleteContact = await removeContact(contactId);
-  if (!deleteContact) {
-    throw HttpError(404);
-  }
+
   res.status(200).json({
     message: "success!",
     deleteContact,
@@ -65,9 +60,7 @@ export const updateContact = catchAsync(async (req, res, next) => {
     return next(HttpError(400, "Body must have at least one field"));
   }
   const updatedContact = await updateOneContact(contactId, newData);
-  if (!updatedContact) {
-    throw HttpError(404);
-  }
+
   res.status(200).json({
     message: "success!",
     updatedContact,

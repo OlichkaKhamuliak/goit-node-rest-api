@@ -2,7 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { nanoid } from "nanoid";
 
-const contactsPath = path.join("db", "contacts.json");
+export const contactsPath = path.join("db", "contacts.json");
 
 export async function listContacts() {
   try {
