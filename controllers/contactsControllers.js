@@ -48,18 +48,12 @@ export const deleteContact = catchAsync(async (req, res) => {
   });
 });
 
-export const createContact = catchAsync(async (req, res, next) => {
-  const { value, errors } = createContactSchema(req.body);
-
-  if (errors) {
-    return next(HttpError(400, errors));
-  }
-
-  const { name, email, phone } = value;
+export const createContact = catchAsync(async (req, res) => {
+  const { name, email, phone } = req.body;
   const newContact = await addContact(name, email, phone);
 
   res.status(201).json({
-    msg: "success!",
+    message: "success!",
     user: newContact,
   });
 });
@@ -69,10 +63,6 @@ export const updateContact = catchAsync(async (req, res, next) => {
   const newData = req.body;
   if (Object.keys(newData).length === 0) {
     return next(HttpError(400, "Body must have at least one field"));
-  }
-  const { errors } = updateContactSchema(newData);
-  if (errors) {
-    return next(HttpError(400, errors));
   }
   const updatedContact = await updateOneContact(contactId, newData);
   if (!updatedContact) {
