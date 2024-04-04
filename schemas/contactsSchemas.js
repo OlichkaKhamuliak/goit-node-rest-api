@@ -23,4 +23,6 @@ export const updateContactSchema = Joi.object()
       .regex(/^\+?[\d()\-\s]+$/)
       .message('"phone" invalid phone number format')
       .trim(),
-  });
+  })
+  .or("name", "email", "phone")
+  .messages({ "object.missing": "Body must have at least one field" });
