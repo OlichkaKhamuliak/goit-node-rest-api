@@ -11,7 +11,10 @@ import {
   createContactSchema,
   updateContactSchema,
 } from "../schemas/contactsSchemas.js";
-import { checkUserId } from "../helpers/userId.js";
+import {
+  checkCreateContactData,
+  checkUserId,
+} from "../helpers/userMiddlewares.js";
 
 const contactsRouter = express.Router();
 
@@ -21,7 +24,12 @@ contactsRouter.get("/:id", checkUserId, getOneContact);
 
 contactsRouter.delete("/:id", checkUserId, deleteContact);
 
-contactsRouter.post("/", validateBody(createContactSchema), createContact);
+contactsRouter.post(
+  "/",
+  validateBody(createContactSchema),
+  checkCreateContactData,
+  createContact
+);
 
 contactsRouter.put(
   "/:id",
