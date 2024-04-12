@@ -5,6 +5,7 @@ import {
   deleteContact,
   createContact,
   updateContact,
+  getFavorites,
 } from "../controllers/contactsControllers.js";
 import validateBody from "../helpers/validateBody.js";
 import {
@@ -13,10 +14,13 @@ import {
 } from "../schemas/contactsSchemas.js";
 import {
   checkCreateContactData,
+  checkUpdateContactData,
   checkUserId,
 } from "../helpers/userMiddlewares.js";
 
 const contactsRouter = express.Router();
+
+contactsRouter.get("/favorites", getFavorites);
 
 contactsRouter.get("/", getAllContacts);
 
@@ -35,6 +39,7 @@ contactsRouter.put(
   "/:id",
   validateBody(updateContactSchema),
   checkUserId,
+  checkUpdateContactData,
   updateContact
 );
 

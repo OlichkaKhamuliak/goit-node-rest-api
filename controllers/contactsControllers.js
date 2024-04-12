@@ -1,19 +1,21 @@
-import {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateOneContact,
-} from "../services/contactsServices.js";
 import { catchAsync } from "../helpers/catchAsync.js";
 import { Contact } from "../models/contactModel.js";
 
 export const getAllContacts = catchAsync(async (req, res) => {
-  const contactsList = await Contact.find();
+  const contacts = await Contact.find();
 
   res.status(200).json({
     message: "success!",
-    contactsList,
+    contacts,
+  });
+});
+
+export const getFavorites = catchAsync(async (req, res) => {
+  const favorites = await Contact.find({ favorite: true });
+
+  res.status(200).json({
+    message: "success!",
+    contacts: favorites,
   });
 });
 
@@ -27,14 +29,14 @@ export const getOneContact = catchAsync(async (req, res) => {
 });
 
 export const deleteContact = catchAsync(async (req, res) => {
-  const contactId = req.params.id;
+  await Contact.findByIdAndDelete(req.params.id);
 
-  const deleteContact = await removeContact(contactId);
+  // res.status(200).json({
+  //   message: "success!",
+  //   deleteContact,
+  // });
 
-  res.status(200).json({
-    message: "success!",
-    deleteContact,
-  });
+  res.sendStatus(204);
 });
 
 export const createContact = catchAsync(async (req, res) => {
@@ -42,17 +44,19 @@ export const createContact = catchAsync(async (req, res) => {
 
   res.status(201).json({
     message: "success!",
-    user: newContact,
+    contact: newContact,
   });
 });
 
 export const updateContact = catchAsync(async (req, res, next) => {
-  const contactId = req.params.id;
-  const newData = req.body;
-  const updatedContact = await updateOneContact(contactId, newData);
+  const { contact, body } = req;
+
+  const updatedContact = await Contact.findByIdAndUpdate(contact.id, body, {
+    new: true,
+  });
 
   res.status(200).json({
     message: "success!",
-    updatedContact,
+    contact: updatedContact,
   });
 });

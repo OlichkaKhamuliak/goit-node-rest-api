@@ -1,7 +1,9 @@
 import { catchAsync } from "./catchAsync.js";
 import HttpError from "./HttpError.js";
-import { contactsPath } from "../services/contactsServices.js";
-import { createContactSchema } from "../schemas/contactsSchemas.js";
+import {
+  createContactSchema,
+  updateContactSchema,
+} from "../schemas/contactsSchemas.js";
 import { Contact } from "../models/contactModel.js";
 import { Types } from "mongoose";
 
@@ -40,5 +42,13 @@ export const checkCreateContactData = catchAsync(async (req, res, next) => {
   }
 
   req.body = value;
+  next();
+});
+
+export const checkUpdateContactData = catchAsync(async (req, res, next) => {
+  const { value } = updateContactSchema.validate(req.body);
+
+  req.body = value;
+
   next();
 });
