@@ -6,15 +6,17 @@ import {
   createContact,
   updateContact,
   getFavorites,
+  updateFavoriteContact,
 } from "../controllers/contactsControllers.js";
 import validateBody from "../helpers/validateBody.js";
 import {
   createContactSchema,
   updateContactSchema,
+  updateFavoriteContactSchema,
 } from "../schemas/contactsSchemas.js";
 import {
   checkCreateContactData,
-  checkUpdateContactData,
+  // checkUpdateContactData,
   checkUserId,
 } from "../helpers/userMiddlewares.js";
 
@@ -36,10 +38,17 @@ contactsRouter.post(
 );
 
 contactsRouter.put(
+  "/:id/favorite",
+  checkUserId,
+  validateBody(updateFavoriteContactSchema),
+  updateFavoriteContact
+);
+
+contactsRouter.put(
   "/:id",
   validateBody(updateContactSchema),
   checkUserId,
-  checkUpdateContactData,
+  // checkUpdateContactData,
   updateContact
 );
 

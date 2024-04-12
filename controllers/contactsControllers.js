@@ -48,7 +48,7 @@ export const createContact = catchAsync(async (req, res) => {
   });
 });
 
-export const updateContact = catchAsync(async (req, res, next) => {
+export const updateContact = catchAsync(async (req, res) => {
   const { contact, body } = req;
 
   const updatedContact = await Contact.findByIdAndUpdate(contact.id, body, {
@@ -58,5 +58,20 @@ export const updateContact = catchAsync(async (req, res, next) => {
   res.status(200).json({
     message: "success!",
     contact: updatedContact,
+  });
+});
+
+export const updateFavoriteContact = catchAsync(async (req, res) => {
+  const { contact, body } = req;
+
+  const updatedFavoriteContact = await Contact.findByIdAndUpdate(
+    contact.id,
+    { favorite: body.favorite },
+    { new: true }
+  );
+
+  res.status(200).json({
+    message: "success update favorite!",
+    contact: updatedFavoriteContact,
   });
 });

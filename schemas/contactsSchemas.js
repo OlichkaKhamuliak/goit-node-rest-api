@@ -25,7 +25,12 @@ export const updateContactSchema = Joi.object()
       .regex(PHONE_REGEX)
       .message('"phone" invalid phone number format')
       .trim(),
-    favorite: Joi.boolean(),
   })
   .min(1)
   .messages({ "object.min": "Body must have at least one field" });
+
+export const updateFavoriteContactSchema = Joi.object()
+  .options({ abortEarly: false })
+  .keys({
+    favorite: Joi.boolean(),
+  });
