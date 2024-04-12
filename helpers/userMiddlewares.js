@@ -1,24 +1,23 @@
-import { promises as fs } from "fs";
 import { catchAsync } from "./catchAsync.js";
 import HttpError from "./HttpError.js";
 import { contactsPath } from "../services/contactsServices.js";
 import { createContactSchema } from "../schemas/contactsSchemas.js";
 import { Contact } from "../models/contactModel.js";
+import { Types } from "mongoose";
 
 export const checkUserId = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  // TEMP save user to the DB
-  const usersDB = await fs.readFile(contactsPath);
+  const isValidId = Types.ObjectId.isValid(id);
 
-  const users = JSON.parse(usersDB);
-  const user = users.find((u) => u.id === id);
+  if (!isValidId) throw HttpError(404);
 
-  if (!user) {
-    throw HttpError(404);
-  }
+  const contact = await Contact.findById(id);
+  // const contact = await Contact.find({ _id: id });
 
-  req.user = user;
+  if (!contact) throw HttpError(404);
+
+  req.contact = contact;
 
   next();
 });

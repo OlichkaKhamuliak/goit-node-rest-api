@@ -9,7 +9,6 @@ import { catchAsync } from "../helpers/catchAsync.js";
 import { Contact } from "../models/contactModel.js";
 
 export const getAllContacts = catchAsync(async (req, res) => {
-  // const contactsList = await listContacts();
   const contactsList = await Contact.find();
 
   res.status(200).json({
@@ -19,12 +18,11 @@ export const getAllContacts = catchAsync(async (req, res) => {
 });
 
 export const getOneContact = catchAsync(async (req, res) => {
-  const contactId = req.params.id;
-  const oneContact = await getContactById(contactId);
+  const { contact } = req;
 
   res.status(200).json({
     message: "success!",
-    oneContact,
+    contact,
   });
 });
 
@@ -40,9 +38,6 @@ export const deleteContact = catchAsync(async (req, res) => {
 });
 
 export const createContact = catchAsync(async (req, res) => {
-  // const { name, email, phone } = req.body;
-  // const newContact = await addContact(name, email, phone);
-
   const newContact = await Contact.create(req.body);
 
   res.status(201).json({
