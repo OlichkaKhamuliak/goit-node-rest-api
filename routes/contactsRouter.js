@@ -7,6 +7,7 @@ import {
   updateContact,
   getFavorites,
   updateFavoriteContact,
+  getNonFavorites,
 } from "../controllers/contactsControllers.js";
 import validateBody from "../helpers/validateBody.js";
 import {
@@ -16,15 +17,22 @@ import {
 } from "../schemas/contactsSchemas.js";
 import {
   checkCreateContactData,
-  // checkUpdateContactData,
   checkUserId,
 } from "../helpers/userMiddlewares.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/favorites", getFavorites);
+contactsRouter.get("/", (req, res) => {
+  const favorite = req.query.favorite;
 
-contactsRouter.get("/", getAllContacts);
+  if (favorite === "true") {
+    return getFavorites(req, res);
+  } else if (favorite === "false") {
+    return getNonFavorites(req, res);
+  }
+
+  return getAllContacts(req, res);
+});
 
 contactsRouter.get("/:id", checkUserId, getOneContact);
 
@@ -48,7 +56,6 @@ contactsRouter.put(
   "/:id",
   validateBody(updateContactSchema),
   checkUserId,
-  // checkUpdateContactData,
   updateContact
 );
 

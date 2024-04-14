@@ -19,6 +19,15 @@ export const getFavorites = catchAsync(async (req, res) => {
   });
 });
 
+export const getNonFavorites = catchAsync(async (req, res) => {
+  const favorites = await Contact.find({ favorite: false });
+
+  res.status(200).json({
+    message: "success!",
+    contacts: favorites,
+  });
+});
+
 export const getOneContact = catchAsync(async (req, res) => {
   const { contact } = req;
 
