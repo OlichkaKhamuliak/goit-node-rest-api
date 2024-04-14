@@ -1,8 +1,15 @@
+import HttpError from "../helpers/HttpError.js";
 import { catchAsync } from "../helpers/catchAsync.js";
 import { Contact } from "../models/contactModel.js";
 
 export const getAllContacts = catchAsync(async (req, res) => {
-  const contacts = await Contact.find();
+  const { favorite } = req.query;
+
+  const filters = {};
+
+  if (favorite) filters.favorite = favorite;
+
+  const contacts = await Contact.find(filters);
 
   res.status(200).json({
     message: "success!",
@@ -10,26 +17,12 @@ export const getAllContacts = catchAsync(async (req, res) => {
   });
 });
 
-export const getFavorites = catchAsync(async (req, res) => {
-  const favorites = await Contact.find({ favorite: true });
-
-  res.status(200).json({
-    message: "success!",
-    contacts: favorites,
-  });
-});
-
-export const getNonFavorites = catchAsync(async (req, res) => {
-  const favorites = await Contact.find({ favorite: false });
-
-  res.status(200).json({
-    message: "success!",
-    contacts: favorites,
-  });
-});
-
 export const getOneContact = catchAsync(async (req, res) => {
-  const { contact } = req;
+  const { id } = req.params;
+
+  const contact = await Contact.findById(id);
+
+  if (!contact) throw HttpError(404);
 
   res.status(200).json({
     message: "success!",
@@ -38,14 +31,16 @@ export const getOneContact = catchAsync(async (req, res) => {
 });
 
 export const deleteContact = catchAsync(async (req, res) => {
-  await Contact.findByIdAndDelete(req.params.id);
+  const { id } = req.params;
 
-  // res.status(200).json({
-  //   message: "success!",
-  //   deleteContact,
-  // });
+  const contact = await Contact.findByIdAndDelete(id);
 
-  res.sendStatus(204);
+  if (!contact) throw HttpError(404);
+
+  res.status(204).json({
+    message: "success!",
+    contact,
+  });
 });
 
 export const createContact = catchAsync(async (req, res) => {

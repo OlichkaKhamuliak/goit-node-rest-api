@@ -1,5 +1,4 @@
 import { model, Schema } from "mongoose";
-import uniqueValidator from "mongoose-unique-validator";
 
 const contactSchema = new Schema(
   {
@@ -10,12 +9,10 @@ const contactSchema = new Schema(
     email: {
       type: String,
       required: true,
-      // unique: true,
     },
     phone: {
       type: String,
       required: true,
-      // unique: true,
     },
     favorite: {
       type: Boolean,
@@ -27,9 +24,5 @@ const contactSchema = new Schema(
     versionKey: false,
   }
 );
-
-contactSchema.plugin(uniqueValidator, {
-  message: "This {PATH} is already in use.",
-});
 
 export const Contact = model("Contact", contactSchema);
