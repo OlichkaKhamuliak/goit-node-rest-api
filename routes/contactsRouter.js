@@ -16,7 +16,7 @@ import {
   updateFavoriteContactSchema,
 } from "../schemas/contactsSchemas.js";
 import {
-  checkCreateContactData,
+  // checkCreateContactData,
   checkUserId,
 } from "../helpers/userMiddlewares.js";
 
@@ -41,7 +41,7 @@ contactsRouter.delete("/:id", checkUserId, deleteContact);
 contactsRouter.post(
   "/",
   validateBody(createContactSchema),
-  checkCreateContactData,
+  // checkCreateContactData,
   createContact
 );
 

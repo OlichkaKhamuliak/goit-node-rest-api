@@ -21,23 +21,23 @@ export const checkUserId = catchAsync(async (req, res, next) => {
   next();
 });
 
-export const checkCreateContactData = catchAsync(async (req, res, next) => {
-  const { value } = createContactSchema.validate(req.body);
+// export const checkCreateContactData = catchAsync(async (req, res, next) => {
+//   const { value } = createContactSchema.validate(req.body);
 
-  const emailExists = await Contact.exists({ email: value.email });
-  const phoneExists = await Contact.exists({ phone: value.phone });
+//   const emailExists = await Contact.exists({ email: value.email });
+//   const phoneExists = await Contact.exists({ phone: value.phone });
 
-  if (emailExists && phoneExists) {
-    throw HttpError(
-      409,
-      "User with this email and phone number is already exist"
-    );
-  } else if (emailExists) {
-    throw HttpError(409, "User with this email is already exist");
-  } else if (phoneExists) {
-    throw HttpError(409, "User with this phone number is already exist");
-  }
+//   if (emailExists && phoneExists) {
+//     throw HttpError(
+//       409,
+//       "User with this email and phone number is already exist"
+//     );
+//   } else if (emailExists) {
+//     throw HttpError(409, "User with this email is already exist");
+//   } else if (phoneExists) {
+//     throw HttpError(409, "User with this phone number is already exist");
+//   }
 
-  req.body = value;
-  next();
-});
+//   req.body = value;
+//   next();
+// });
