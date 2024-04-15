@@ -2,7 +2,7 @@ import { catchAsync } from "./catchAsync.js";
 import HttpError from "./HttpError.js";
 import { Types } from "mongoose";
 
-export const checkUserId = catchAsync(async (req, res, next) => {
+export const checkUserId = catchAsync(async (req, _, next) => {
   const { id } = req.params;
 
   const isValidId = Types.ObjectId.isValid(id);

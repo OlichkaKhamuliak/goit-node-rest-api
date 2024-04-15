@@ -2,24 +2,13 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
-import mongoose from "mongoose";
 
 import contactsRouter from "./routes/contactsRouter.js";
 import { globalErrorHandler } from "./controllers/errorController.js";
 
 dotenv.config();
 
-const app = express();
-
-mongoose
-  .connect(process.env.MONGODB_URL)
-  .then(() => {
-    console.log("Database connection successful");
-  })
-  .catch((err) => {
-    console.log(err);
-    process.exit(1);
-  });
+export const app = express();
 
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 app.use(express.json());
@@ -36,9 +25,3 @@ app.all("*", (req, res) => {
 });
 
 app.use(globalErrorHandler);
-
-const port = +process.env.PORT;
-
-app.listen(port, () => {
-  console.log(`Server is running. Use our API on port: ${port}`);
-});

@@ -53,9 +53,10 @@ export const createContact = catchAsync(async (req, res) => {
 });
 
 export const updateContact = catchAsync(async (req, res) => {
-  const { contact, body } = req;
+  const { id } = req.params;
+  const { body } = req;
 
-  const updatedContact = await Contact.findByIdAndUpdate(contact.id, body, {
+  const updatedContact = await Contact.findByIdAndUpdate(id, body, {
     new: true,
   });
 
@@ -66,10 +67,11 @@ export const updateContact = catchAsync(async (req, res) => {
 });
 
 export const updateFavoriteContact = catchAsync(async (req, res) => {
-  const { contact, body } = req;
+  const { id } = req.params;
+  const { body } = req;
 
   const updatedFavoriteContact = await Contact.findByIdAndUpdate(
-    contact.id,
+    id,
     { favorite: body.favorite },
     { new: true }
   );
