@@ -1,65 +1,83 @@
-import {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateOneContact,
-} from "../services/contactsServices.js";
-
-import {
-  createContactSchema,
-  updateContactSchema,
-} from "../schemas/contactsSchemas.js";
 import HttpError from "../helpers/HttpError.js";
 import { catchAsync } from "../helpers/catchAsync.js";
+import { Contact } from "../models/contactModel.js";
 
 export const getAllContacts = catchAsync(async (req, res) => {
-  const contactsList = await listContacts();
+  const { favorite } = req.query;
+
+  const filters = {};
+
+  if (favorite) filters.favorite = favorite;
+
+  const contacts = await Contact.find(filters);
 
   res.status(200).json({
     message: "success!",
-    contactsList,
+    contacts,
   });
 });
 
 export const getOneContact = catchAsync(async (req, res) => {
-  const contactId = req.params.id;
-  const oneContact = await getContactById(contactId);
+  const { id } = req.params;
+
+  const contact = await Contact.findById(id);
+
+  if (!contact) throw HttpError(404);
 
   res.status(200).json({
     message: "success!",
-    oneContact,
+    contact,
   });
 });
 
 export const deleteContact = catchAsync(async (req, res) => {
-  const contactId = req.params.id;
+  const { id } = req.params;
 
-  const deleteContact = await removeContact(contactId);
+  const contact = await Contact.findByIdAndDelete(id);
 
-  res.status(200).json({
+  if (!contact) throw HttpError(404);
+
+  res.status(204).json({
     message: "success!",
-    deleteContact,
+    contact,
   });
 });
 
 export const createContact = catchAsync(async (req, res) => {
-  const { name, email, phone } = req.body;
-  const newContact = await addContact(name, email, phone);
+  const newContact = await Contact.create(req.body);
 
   res.status(201).json({
     message: "success!",
-    user: newContact,
+    contact: newContact,
   });
 });
 
-export const updateContact = catchAsync(async (req, res, next) => {
-  const contactId = req.params.id;
-  const newData = req.body;
-  const updatedContact = await updateOneContact(contactId, newData);
+export const updateContact = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { body } = req;
+
+  const updatedContact = await Contact.findByIdAndUpdate(id, body, {
+    new: true,
+  });
 
   res.status(200).json({
     message: "success!",
-    updatedContact,
+    contact: updatedContact,
+  });
+});
+
+export const updateFavoriteContact = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { body } = req;
+
+  const updatedFavoriteContact = await Contact.findByIdAndUpdate(
+    id,
+    { favorite: body.favorite },
+    { new: true }
+  );
+
+  res.status(200).json({
+    message: "success update favorite!",
+    contact: updatedFavoriteContact,
   });
 });
