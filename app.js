@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 
 import contactsRouter from "./routes/contactsRouter.js";
+import { router as authRouter } from "./routes/authRouter.js";
 import { globalErrorHandler } from "./controllers/errorController.js";
 
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(cors());
 
 const pathPrefix = "/api";
 
+app.use(`${pathPrefix}/users`, authRouter);
 app.use(`${pathPrefix}/contacts`, contactsRouter);
 
 app.all("*", (req, res) => {
