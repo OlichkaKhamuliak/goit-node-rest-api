@@ -12,6 +12,6 @@ export const checkToken = (token) => {
     const { id } = jwt.verify(token, process.env.JWT_SECRET);
     return id;
   } catch (err) {
-    throw new HttpError(401);
+    throw HttpError(401);
   }
 };

@@ -1,8 +1,6 @@
 import { userRoles } from "../constans/userRoles.js";
 import HttpError from "../helpers/HttpError.js";
 import { catchAsync } from "../helpers/catchAsync.js";
-import { User } from "../models/userModel.js";
-import { signToken } from "../servises/jwtServise.js";
 import { loginUser, registerUser } from "../servises/userServise.js";
 
 export const register = catchAsync(async (req, res) => {

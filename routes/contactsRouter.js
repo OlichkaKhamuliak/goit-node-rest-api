@@ -13,8 +13,11 @@ import {
   updateFavoriteContactSchema,
 } from "../schemas/contactsSchemas.js";
 import { checkUserId } from "../helpers/contactMiddlewares.js";
+import { protect } from "../helpers/authMiddlewares.js";
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(protect);
 
 contactsRouter.get("/", getAllContacts);
 
@@ -31,6 +34,12 @@ contactsRouter.put(
   updateFavoriteContact
 );
 
-contactsRouter.put("/:id", updateContactSchema, checkUserId, updateContact);
+contactsRouter.put(
+  "/:id",
+  protect,
+  updateContactSchema,
+  checkUserId,
+  updateContact
+);
 
 export default contactsRouter;
