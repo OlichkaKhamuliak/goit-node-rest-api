@@ -49,6 +49,7 @@ export const createContact = catchAsync(async (req, res) => {
   res.status(201).json({
     message: "success!",
     contact: newContact,
+    owner: newContact.id,
   });
 });
 
