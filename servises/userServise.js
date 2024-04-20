@@ -52,13 +52,14 @@ export const checkUserExistsService = (filter) => User.exists(filter);
 export const getUserByIdService = (id) => User.findById(id);
 
 export const registerUser = async (userData) => {
+  const userExists = await checkUserExistsService({ email: userData.email });
+
+  if (userExists) throw HttpError(409, "User with this email already exists");
+
   const newUser = await User.create({
     ...userData,
     subscription: userRoles.STARTER,
   });
-  const userExists = await checkUserExistsService({ email: req.body.email });
-
-  if (userExists) throw HttpError(409, "User with this email already exists");
   newUser.password = undefined;
 
   const token = signToken(newUser.id);

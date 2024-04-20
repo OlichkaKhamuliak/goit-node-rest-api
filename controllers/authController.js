@@ -23,3 +23,9 @@ export const login = catchAsync(async (req, res) => {
     user,
   });
 });
+
+export const getMe = (req, res) => {
+  res.status(200).json({
+    user: req.user,
+  });
+};
