@@ -2,7 +2,12 @@
 
 import { Router } from "express";
 import { checkRegisterData, protect } from "../helpers/authMiddlewares.js";
-import { getMe, login, register } from "../controllers/authController.js";
+import {
+  getMe,
+  login,
+  logout,
+  register,
+} from "../controllers/authController.js";
 import {
   loginUserSchema,
   registerUserSchema,
@@ -10,11 +15,12 @@ import {
 
 const authRouter = Router();
 
-authRouter.get("/me", protect, getMe);
+authRouter.get("/current", protect, getMe);
 
 authRouter.post("/register", checkRegisterData, registerUserSchema, register);
 
-// checkLoginData login
 authRouter.post("/login", loginUserSchema, login);
+
+authRouter.post("/logout", protect, logout);
 
 export { authRouter };
