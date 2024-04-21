@@ -7,15 +7,17 @@ import {
   updateContact,
   updateFavoriteContact,
 } from "../controllers/contactsControllers.js";
-import validateBody from "../helpers/validateBody.js";
 import {
   createContactSchema,
   updateContactSchema,
   updateFavoriteContactSchema,
 } from "../schemas/contactsSchemas.js";
 import { checkUserId } from "../helpers/contactMiddlewares.js";
+import { checkRegisterToken, protect } from "../helpers/authMiddlewares.js";
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(protect, checkRegisterToken);
 
 contactsRouter.get("/", getAllContacts);
 
@@ -23,18 +25,19 @@ contactsRouter.get("/:id", checkUserId, getOneContact);
 
 contactsRouter.delete("/:id", checkUserId, deleteContact);
 
-contactsRouter.post("/", validateBody(createContactSchema), createContact);
+contactsRouter.post("/", createContactSchema, createContact);
 
 contactsRouter.put(
   "/:id/favorite",
   checkUserId,
-  validateBody(updateFavoriteContactSchema),
+  updateFavoriteContactSchema,
   updateFavoriteContact
 );
 
 contactsRouter.put(
   "/:id",
-  validateBody(updateContactSchema),
+  protect,
+  updateContactSchema,
   checkUserId,
   updateContact
 );
