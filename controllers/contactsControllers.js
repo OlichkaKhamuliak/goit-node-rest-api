@@ -1,16 +1,21 @@
+import { userRoles } from "../constans/userRoles.js";
 import HttpError from "../helpers/HttpError.js";
 import { catchAsync } from "../helpers/catchAsync.js";
 import { Contact } from "../models/contactModel.js";
 
 export const getAllContacts = catchAsync(async (req, res) => {
-  const { favorite } = req.query;
   const userId = req.user._id;
+  let { page = 1, limit = 20, favorite } = req.query;
 
   const filters = { owner: userId };
 
   if (favorite) filters.favorite = favorite;
 
-  const userContacts = await Contact.find(filters);
+  page = parseInt(page);
+  limit = parseInt(limit);
+  const skip = (page - 1) * limit;
+
+  const userContacts = await Contact.find(filters).skip(skip).limit(limit);
 
   res.status(200).json({
     message: "success!",

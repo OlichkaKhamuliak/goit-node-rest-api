@@ -20,3 +20,11 @@ export const loginUserSchema = validateBody(
       email: Joi.string().email().required(),
     })
 );
+
+export const subscriptionUserSchema = validateBody(
+  Joi.object()
+    .options({ abortEarly: false })
+    .keys({
+      subscription: Joi.string().valid(...Object.values(userRoles)),
+    })
+);

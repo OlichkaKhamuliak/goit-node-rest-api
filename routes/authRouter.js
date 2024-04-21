@@ -7,10 +7,12 @@ import {
   login,
   logout,
   register,
+  updateUserSubscription,
 } from "../controllers/authController.js";
 import {
   loginUserSchema,
   registerUserSchema,
+  subscriptionUserSchema,
 } from "../schemas/usersSchemas.js";
 
 const authRouter = Router();
@@ -22,5 +24,7 @@ authRouter.post("/register", checkRegisterData, registerUserSchema, register);
 authRouter.post("/login", loginUserSchema, login);
 
 authRouter.post("/logout", protect, logout);
+
+authRouter.patch("/", protect, subscriptionUserSchema, updateUserSubscription);
 
 export { authRouter };

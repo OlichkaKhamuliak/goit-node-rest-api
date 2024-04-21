@@ -1,3 +1,4 @@
+import { userRoles } from "../constans/userRoles.js";
 import HttpError from "../helpers/HttpError.js";
 import { catchAsync } from "../helpers/catchAsync.js";
 import { User } from "../models/userModel.js";
@@ -43,3 +44,21 @@ export const getMe = (req, res) => {
     user: req.user,
   });
 };
+
+export const updateUserSubscription = catchAsync(async (req, res) => {
+  const { subscription } = req.body;
+  const { _id } = req.user;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    { subscription },
+    { new: true }
+  );
+
+  if (!updatedUser) throw HttpError(401);
+
+  res.status(200).json({
+    message: "Subscription updated successfully",
+    user: updatedUser,
+  });
+});
