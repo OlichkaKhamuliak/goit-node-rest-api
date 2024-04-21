@@ -1,7 +1,11 @@
 //  /users/register
 
 import { Router } from "express";
-import { checkRegisterData, protect } from "../helpers/authMiddlewares.js";
+import {
+  checkRegisterData,
+  checkRegisterToken,
+  protect,
+} from "../helpers/authMiddlewares.js";
 import {
   getMe,
   login,
@@ -17,14 +21,20 @@ import {
 
 const authRouter = Router();
 
-authRouter.get("/current", protect, getMe);
+authRouter.get("/current", protect, checkRegisterToken, getMe);
 
 authRouter.post("/register", checkRegisterData, registerUserSchema, register);
 
 authRouter.post("/login", loginUserSchema, login);
 
-authRouter.post("/logout", protect, logout);
+authRouter.post("/logout", protect, checkRegisterToken, logout);
 
-authRouter.patch("/", protect, subscriptionUserSchema, updateUserSubscription);
+authRouter.patch(
+  "/",
+  protect,
+  checkRegisterToken,
+  subscriptionUserSchema,
+  updateUserSubscription
+);
 
 export { authRouter };

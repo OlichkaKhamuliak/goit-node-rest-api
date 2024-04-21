@@ -14,7 +14,7 @@ export const checkRegisterData = catchAsync(async (req, _, next) => {
   next();
 });
 
-export const protect = catchAsync(async (req, res, next) => {
+export const protect = catchAsync(async (req, _, next) => {
   const token =
     req.headers.authorization?.startsWith("Bearer ") &&
     req.headers.authorization.split(" ")[1];
@@ -31,3 +31,11 @@ export const protect = catchAsync(async (req, res, next) => {
 
   next();
 });
+
+export const checkRegisterToken = (req, _, next) => {
+  const { token } = req.user;
+
+  if (!token) throw HttpError(401);
+
+  next();
+};

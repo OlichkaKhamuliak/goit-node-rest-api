@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
-import { userRoles } from "../constans/userRoles.js";
+import { userSubscription } from "../constans/userSubscription.js";
 
 const userSchema = new Schema(
   {
@@ -17,8 +17,8 @@ const userSchema = new Schema(
     },
     subscription: {
       type: String,
-      enum: Object.values(userRoles),
-      default: userRoles.STARTER,
+      enum: Object.values(userSubscription),
+      default: userSubscription.STARTER,
     },
     token: {
       type: String,

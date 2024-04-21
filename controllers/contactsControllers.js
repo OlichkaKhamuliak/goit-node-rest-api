@@ -1,13 +1,12 @@
-import { userRoles } from "../constans/userRoles.js";
 import HttpError from "../helpers/HttpError.js";
 import { catchAsync } from "../helpers/catchAsync.js";
 import { Contact } from "../models/contactModel.js";
 
 export const getAllContacts = catchAsync(async (req, res) => {
-  const userId = req.user._id;
-  let { page = 1, limit = 20, favorite } = req.query;
+  const { _id } = req.user;
+  const filters = { owner: _id };
 
-  const filters = { owner: userId };
+  let { page = 1, limit = 20, favorite } = req.query;
 
   if (favorite) filters.favorite = favorite;
 
@@ -25,9 +24,9 @@ export const getAllContacts = catchAsync(async (req, res) => {
 
 export const getOneContact = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const userId = req.user._id;
+  const { _id } = req.user;
 
-  const contact = await Contact.findOne({ _id: id, owner: userId });
+  const contact = await Contact.findOne({ _id: id, owner: _id });
 
   if (!contact) throw HttpError(404);
 
@@ -39,9 +38,9 @@ export const getOneContact = catchAsync(async (req, res) => {
 
 export const deleteContact = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const userId = req.user._id;
+  const { _id } = req.user;
 
-  const contact = await Contact.findOneAndDelete({ _id: id, owner: userId });
+  const contact = await Contact.findOneAndDelete({ _id: id, owner: _id });
 
   if (!contact) {
     throw HttpError(404);
@@ -70,10 +69,10 @@ export const createContact = catchAsync(async (req, res) => {
 export const updateContact = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { body } = req;
-  const userId = req.user._id;
+  const { _id } = req.user;
 
   const updatedContact = await Contact.findOneAndUpdate(
-    { _id: id, owner: userId },
+    { _id: id, owner: _id },
     body,
     {
       new: true,
@@ -91,10 +90,10 @@ export const updateContact = catchAsync(async (req, res) => {
 export const updateFavoriteContact = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { body } = req;
-  const userId = req.user._id;
+  const { _id } = req.user;
 
   const updatedFavoriteContact = await Contact.findOneAndUpdate(
-    { _id: id, owner: userId },
+    { _id: id, owner: _id },
     { favorite: body.favorite },
     { new: true }
   );

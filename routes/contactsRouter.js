@@ -13,11 +13,11 @@ import {
   updateFavoriteContactSchema,
 } from "../schemas/contactsSchemas.js";
 import { checkUserId } from "../helpers/contactMiddlewares.js";
-import { protect } from "../helpers/authMiddlewares.js";
+import { checkRegisterToken, protect } from "../helpers/authMiddlewares.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.use(protect);
+contactsRouter.use(protect, checkRegisterToken);
 
 contactsRouter.get("/", getAllContacts);
 
