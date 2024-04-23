@@ -44,8 +44,15 @@ export const getAllContacts = catchAsync(async (req, res) => {
 
   const userContacts = await Contact.find(filters).skip(skip).limit(limit);
 
+  const total_contacts = await Contact.countDocuments(filters);
+
+  const total_pages = Math.ceil(total_contacts / limit);
+
   res.status(200).json({
     message: "success!",
+    total_pages,
+    total_contacts,
+    per_page: limit,
     contacts: userContacts,
   });
 });
