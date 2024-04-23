@@ -6,9 +6,24 @@ export const getAllContacts = catchAsync(async (req, res) => {
   const { _id } = req.user;
   const filters = { owner: _id };
 
-  let { page = 1, limit = 20, favorite } = req.query;
+  let { page = 1, limit = 20, favorite, phone, name, email } = req.query;
 
   if (favorite) filters.favorite = favorite;
+
+  if (phone) {
+    const regex = new RegExp(phone, "i");
+    filters.phone = regex;
+  }
+
+  if (name) {
+    const regex = new RegExp(name, "i");
+    filters.name = regex;
+  }
+
+  if (email) {
+    const regex = new RegExp(email, "i");
+    filters.email = regex;
+  }
 
   page = parseInt(page);
   limit = parseInt(limit);
