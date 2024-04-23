@@ -1,3 +1,4 @@
+import path from "path";
 import { userSubscription } from "../constans/userSubscription.js";
 import HttpError from "../helpers/HttpError.js";
 import { User } from "../models/userModel.js";
@@ -48,4 +49,17 @@ export const loginUser = async ({ email, password }) => {
   const token = signToken(user.id);
 
   return { user, token };
+};
+
+export const updateMyAvatarServise = async (user, file) => {
+  if (file) {
+    user.avatarURL = path
+      .normalize(file.path)
+      .replace(/\\/g, "/")
+      .replace("public", "");
+  }
+
+  await user.save();
+
+  return user;
 };

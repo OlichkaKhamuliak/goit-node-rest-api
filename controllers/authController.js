@@ -1,7 +1,11 @@
 import HttpError from "../helpers/HttpError.js";
 import { catchAsync } from "../helpers/catchAsync.js";
 import { User } from "../models/userModel.js";
-import { loginUser, registerUser } from "../servises/userServise.js";
+import {
+  loginUser,
+  registerUser,
+  updateMyAvatarServise,
+} from "../servises/userServise.js";
 
 export const register = catchAsync(async (req, res) => {
   const { newUser } = await registerUser(req.body);
@@ -41,14 +45,9 @@ export const logout = catchAsync(async (req, res) => {
   res.sendStatus(204);
 });
 
-export const getMe = (req, res) => {
-  res.status(200).json({
-    user: req.user,
-  });
-};
-
 export const updateUserSubscription = catchAsync(async (req, res) => {
   const { subscription } = req.body;
+
   const { _id } = req.user;
 
   const updatedUser = await User.findByIdAndUpdate(
@@ -61,6 +60,24 @@ export const updateUserSubscription = catchAsync(async (req, res) => {
 
   res.status(200).json({
     message: "Subscription updated successfully",
+    user: updatedUser,
+  });
+});
+
+export const getMe = (req, res) => {
+  res.status(200).json({
+    user: req.user,
+  });
+};
+
+export const updateMyAvatar = catchAsync(async (req, res) => {
+  if (!req.user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const updatedUser = await updateMyAvatarServise(req.user, req.file);
+
+  res.status(200).json({
     user: updatedUser,
   });
 });

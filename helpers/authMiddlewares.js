@@ -1,3 +1,7 @@
+import multer from "multer";
+import path from "path";
+import { v4 } from "uuid";
+
 import { checkToken } from "../servises/jwtServise.js";
 import {
   checkUserExistsService,
@@ -39,3 +43,29 @@ export const checkRegisterToken = (req, _, next) => {
 
   next();
 };
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cbk) => {
+    cbk(null, path.join("public", "avatars"));
+  },
+  filename: (req, file, cbk) => {
+    const extension = file.mimetype.split("/")[1];
+    cbk(null, `${req.user.id}-${v4()}.${extension}`);
+  },
+});
+
+const multerFilter = (req, file, callback) => {
+  if (file.mimetype.startsWith("image/")) {
+    callback(null, true);
+  } else {
+    callback(HttpError(400), "Please, upload images only", false);
+  }
+};
+
+const MB_SIZE = 1024 * 1024;
+
+export const uploadAvatar = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+  limits: { fileSize: 2 * MB_SIZE },
+}).single("avatarURL");

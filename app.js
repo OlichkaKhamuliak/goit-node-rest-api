@@ -14,6 +14,7 @@ export const app = express();
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
+app.use(express.static("public"));
 
 const pathPrefix = "/api";
 
