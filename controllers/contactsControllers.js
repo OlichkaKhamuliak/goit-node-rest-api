@@ -6,7 +6,15 @@ export const getAllContacts = catchAsync(async (req, res) => {
   const { _id } = req.user;
   const filters = { owner: _id };
 
-  let { page = 1, limit = 20, favorite, phone, name, email } = req.query;
+  let {
+    page = 1,
+    limit = 20,
+    favorite,
+    phone,
+    name,
+    email,
+    search,
+  } = req.query;
 
   if (favorite) filters.favorite = favorite;
 
@@ -23,6 +31,11 @@ export const getAllContacts = catchAsync(async (req, res) => {
   if (email) {
     const regex = new RegExp(email, "i");
     filters.email = regex;
+  }
+
+  if (search) {
+    const regex = new RegExp(search, "i");
+    filters.$or = [{ phone: regex }, { name: regex }, { email: regex }];
   }
 
   page = parseInt(page);
