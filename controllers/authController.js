@@ -75,7 +75,9 @@ export const updateMyAvatar = catchAsync(async (req, res) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  const updatedUser = await updateMyAvatarServise(req.user, req.file);
+  const updatedUser = await updateMyAvatarServise(req.user, req.file, {
+    new: true,
+  });
 
   res.status(200).json({
     user: updatedUser,

@@ -53,26 +53,21 @@ export const loginUser = async ({ email, password }) => {
 };
 
 export const updateMyAvatarServise = async (user, file) => {
-  if (file) {
-    //   user.avatarURL = path
-    //     .normalize(file.path)
-    //     .replace(/\\/g, "/")
-    //     .replace("public", "");
-    // }
-    user.avataURL = await ImageServise.saveImage(
-      file,
-      {
-        maxFileSize: 2,
-        width: 250,
-        height: 250,
-      },
-      "tmp",
-      "avatars",
-      user.id
-    );
-
-    await user.save();
-
-    return user;
+  if (!file) {
+    throw HttpError(400, "No file provided");
   }
+
+  user.avatarURL = await ImageServise.saveImage(
+    file,
+    {
+      maxFileSize: 2,
+      width: 250,
+      height: 250,
+    },
+    `avatar_${user._id}`
+  );
+
+  await user.save();
+
+  return user;
 };

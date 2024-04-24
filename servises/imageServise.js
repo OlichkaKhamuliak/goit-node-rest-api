@@ -22,7 +22,6 @@ export class ImageServise {
     }).single(fieldName);
   }
 
-  //tmp //users //public/avatars
   static async saveImage(file, options, ...pathSegments) {
     if (
       file.size >
@@ -33,18 +32,33 @@ export class ImageServise {
       throw HttpError(400, "File is too large");
     }
     const fileName = `${v4()}.jpeg`;
-    const fullFilePath = path.join(process.cwd(), "public", ...pathSegments);
+    const tmpDir = path.join(process.cwd(), "tmp");
+    const publicAvatarsDir = path.join(process.cwd(), "public", "avatars");
 
-    await fse.ensureDir(fullFilePath);
-    await sharp(file.buffer)
+    await fse.ensureDir(tmpDir);
+    const resizedImageBuffer = await sharp(file.buffer)
       .resize({
         height: options?.heitht ?? 250,
         width: options?.width ?? 250,
       })
       .toFormat("jpeg")
       .jpeg({ quality: 90 })
-      .toFile(path.join(fullFilePath, fileName));
+      .toBuffer();
 
-    return path.join(...pathSegments, fileName);
+    // Save resized image to temporary directory
+    await fse.outputFile(path.join(tmpDir, fileName), resizedImageBuffer);
+    console.log("Image saved in tmp directory:", tmpDir, fileName);
+
+    // Move image to public/avatars directory
+    const userAvatarPath = path.join(
+      publicAvatarsDir,
+      `${pathSegments[0]}_${fileName}`
+    );
+    await fse.move(path.join(tmpDir, fileName), userAvatarPath);
+
+    // Construct avatar URL
+    const avatarURL = `/avatars/${pathSegments[0]}_${fileName}`;
+
+    return avatarURL;
   }
 }
