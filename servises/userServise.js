@@ -3,6 +3,7 @@ import { userSubscription } from "../constans/userSubscription.js";
 import HttpError from "../helpers/HttpError.js";
 import { User } from "../models/userModel.js";
 import { signToken } from "./jwtServise.js";
+import { ImageServise } from "./imageServise.js";
 
 /**
  * Check if user exists by filter
@@ -53,13 +54,25 @@ export const loginUser = async ({ email, password }) => {
 
 export const updateMyAvatarServise = async (user, file) => {
   if (file) {
-    user.avatarURL = path
-      .normalize(file.path)
-      .replace(/\\/g, "/")
-      .replace("public", "");
+    //   user.avatarURL = path
+    //     .normalize(file.path)
+    //     .replace(/\\/g, "/")
+    //     .replace("public", "");
+    // }
+    user.avataURL = await ImageServise.saveImage(
+      file,
+      {
+        maxFileSize: 2,
+        width: 250,
+        height: 250,
+      },
+      "tmp",
+      "avatars",
+      user.id
+    );
+
+    await user.save();
+
+    return user;
   }
-
-  await user.save();
-
-  return user;
 };
