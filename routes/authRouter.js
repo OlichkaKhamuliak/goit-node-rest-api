@@ -5,12 +5,14 @@ import {
   checkRegisterData,
   checkRegisterToken,
   protect,
+  uploadAvatar,
 } from "../helpers/authMiddlewares.js";
 import {
   getMe,
   login,
   logout,
   register,
+  updateMyAvatar,
   updateUserSubscription,
 } from "../controllers/authController.js";
 import {
@@ -22,6 +24,14 @@ import {
 const authRouter = Router();
 
 authRouter.get("/current", protect, checkRegisterToken, getMe);
+
+authRouter.patch(
+  "/avatars",
+  protect,
+  checkRegisterToken,
+  uploadAvatar,
+  updateMyAvatar
+);
 
 authRouter.post("/register", checkRegisterData, registerUserSchema, register);
 

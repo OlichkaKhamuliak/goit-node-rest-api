@@ -6,9 +6,37 @@ export const getAllContacts = catchAsync(async (req, res) => {
   const { _id } = req.user;
   const filters = { owner: _id };
 
-  let { page = 1, limit = 20, favorite } = req.query;
+  let {
+    page = 1,
+    limit = 20,
+    favorite,
+    phone,
+    name,
+    email,
+    search,
+  } = req.query;
 
   if (favorite) filters.favorite = favorite;
+
+  if (phone) {
+    const regex = new RegExp(phone, "i");
+    filters.phone = regex;
+  }
+
+  if (name) {
+    const regex = new RegExp(name, "i");
+    filters.name = regex;
+  }
+
+  if (email) {
+    const regex = new RegExp(email, "i");
+    filters.email = regex;
+  }
+
+  if (search) {
+    const regex = new RegExp(search, "i");
+    filters.$or = [{ phone: regex }, { name: regex }, { email: regex }];
+  }
 
   page = parseInt(page);
   limit = parseInt(limit);
@@ -16,8 +44,15 @@ export const getAllContacts = catchAsync(async (req, res) => {
 
   const userContacts = await Contact.find(filters).skip(skip).limit(limit);
 
+  const total_contacts = await Contact.countDocuments(filters);
+
+  const total_pages = Math.ceil(total_contacts / limit);
+
   res.status(200).json({
     message: "success!",
+    total_pages,
+    total_contacts,
+    per_page: limit,
     contacts: userContacts,
   });
 });
