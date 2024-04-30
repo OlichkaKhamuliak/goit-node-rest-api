@@ -2,8 +2,8 @@ import path from "path";
 import { userSubscription } from "../constans/userSubscription.js";
 import HttpError from "../helpers/HttpError.js";
 import { User } from "../models/userModel.js";
-import { signToken } from "./jwtServise.js";
-import { ImageServise } from "./imageServise.js";
+import { signToken } from "./jwtService.js";
+import { ImageService } from "./imageService.js";
 
 /**
  * Check if user exists by filter
@@ -52,15 +52,14 @@ export const loginUser = async ({ email, password }) => {
   return { user, token };
 };
 
-export const updateMyAvatarServise = async (user, file) => {
+export const updateMyAvatarService = async (user, file) => {
   if (!file) {
     throw HttpError(400, "No file provided");
   }
 
-  user.avatarURL = await ImageServise.saveImage(
+  user.avatarURL = await ImageService.saveImage(
     file,
     {
-      maxFileSize: 2,
       width: 250,
       height: 250,
     },
