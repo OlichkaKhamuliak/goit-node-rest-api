@@ -8,7 +8,7 @@ import {
   uploadAvatar,
 } from "../helpers/authMiddlewares.js";
 import {
-  getMe,
+  getCurrentUser,
   login,
   logout,
   register,
@@ -23,7 +23,7 @@ import {
 
 const authRouter = Router();
 
-authRouter.get("/current", protect, checkRegisterToken, getMe);
+authRouter.get("/current", protect, checkRegisterToken, getCurrentUser);
 
 authRouter.patch(
   "/avatars",

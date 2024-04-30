@@ -4,8 +4,8 @@ import { User } from "../models/userModel.js";
 import {
   loginUser,
   registerUser,
-  updateMyAvatarServise,
-} from "../servises/userServise.js";
+  updateMyAvatarService,
+} from "../services/userService.js";
 
 export const register = catchAsync(async (req, res) => {
   const { newUser } = await registerUser(req.body);
@@ -64,7 +64,7 @@ export const updateUserSubscription = catchAsync(async (req, res) => {
   });
 });
 
-export const getMe = (req, res) => {
+export const getCurrentUser = (req, res) => {
   res.status(200).json({
     user: req.user,
   });
@@ -75,7 +75,7 @@ export const updateMyAvatar = catchAsync(async (req, res) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  const updatedUser = await updateMyAvatarServise(req.user, req.file, {
+  const updatedUser = await updateMyAvatarService(req.user, req.file, {
     new: true,
   });
 

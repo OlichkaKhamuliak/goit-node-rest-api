@@ -1,11 +1,11 @@
-import { checkToken } from "../servises/jwtServise.js";
+import { checkToken } from "../services/jwtService.js";
 import {
   checkUserExistsService,
   getUserByIdService,
-} from "../servises/userServise.js";
+} from "../services/userService.js";
 import HttpError from "./HttpError.js";
 import { catchAsync } from "./catchAsync.js";
-import { ImageServise } from "../servises/imageServise.js";
+import { ImageService } from "../services/ImageService.js";
 
 export const checkRegisterData = catchAsync(async (req, _, next) => {
   const userExists = await checkUserExistsService({ email: req.body.email });
@@ -41,29 +41,8 @@ export const checkRegisterToken = (req, _, next) => {
   next();
 };
 
-// const multerStorage = multer.diskStorage({
-//   destination: (req, file, cbk) => {
-//     cbk(null, path.join("public", "avatars"));
-//   },
-//   filename: (req, file, cbk) => {
-//     const extension = file.mimetype.split("/")[1];
-//     cbk(null, `${req.user.id}-${v4()}.${extension}`);
-//   },
-// });
-
-// const multerFilter = (req, file, callback) => {
-//   if (file.mimetype.startsWith("image/")) {
-//     callback(null, true);
-//   } else {
-//     callback(HttpError(400), "Please, upload images only", false);
-//   }
-// };
-
-// const MB_SIZE = 1024 * 1024;
-
-// export const uploadAvatar = multer({
-//   storage: multerStorage,
-//   fileFilter: multerFilter,
-//   limits: { fileSize: 2 * MB_SIZE },
-// }).single("avatarURL");
-export const uploadAvatar = ImageServise.initUploadImageMiddleware("avatarURL");
+const maxFileSizeMB = 2;
+export const uploadAvatar = ImageService.initUploadImageMiddleware(
+  "avatarURL",
+  maxFileSizeMB
+);
