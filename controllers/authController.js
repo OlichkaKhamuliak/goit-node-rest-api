@@ -1,17 +1,23 @@
 import HttpError from "../helpers/HttpError.js";
 import { catchAsync } from "../helpers/catchAsync.js";
 import { User } from "../models/userModel.js";
+import { sendEmail } from "../helpers/sendEmail.js";
 import {
   loginUser,
   registerUser,
   updateMyAvatarService,
 } from "../services/userService.js";
 
+// userController.js
 export const register = catchAsync(async (req, res) => {
   const { newUser } = await registerUser(req.body);
 
+  // Викличіть функцію надсилання листа для верифікації email
+  const verificationLink = `http://yourdomain.com/verify/${newUser.verificationToken}`;
+  await sendEmail(newUser.email, verificationLink);
+
   res.status(201).json({
-    message: "success!",
+    message: "success! Check your email for verification link",
     user: newUser,
   });
 });
