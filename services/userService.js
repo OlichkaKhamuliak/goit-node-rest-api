@@ -4,7 +4,7 @@ import HttpError from "../helpers/HttpError.js";
 import { User } from "../models/userModel.js";
 import { signToken } from "./jwtService.js";
 import { ImageService } from "./imageService.js";
-
+import { v4 as uuidv4 } from "uuid";
 /**
  * Check if user exists by filter
  */
@@ -23,9 +23,14 @@ export const registerUser = async (userData) => {
 
   if (userExists) throw HttpError(409, "User with this email already exists");
 
+  // Генерація унікального токену верифікації (UUID)
+  const verificationToken = uuidv4();
+
+  // Створення нового користувача з токеном верифікації
   const newUser = await User.create({
     ...userData,
     subscription: userSubscription.STARTER,
+    verificationToken, // Додати токен верифікації до створення нового користувача
   });
 
   newUser.password = undefined;
