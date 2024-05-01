@@ -13,7 +13,6 @@ import {
 // userController.js
 export const register = catchAsync(async (req, res) => {
   const { newUser } = await registerUser(req.body);
-  console.log("newUser", newUser);
 
   // Викличіть функцію надсилання листа для верифікації email
   await sendEmail(newUser.email, newUser.verificationToken);
@@ -106,8 +105,7 @@ export const verifyEmail = catchAsync(async (req, res) => {
   const user = await User.findOne({ verificationToken });
 
   if (!user) throw HttpError(404, "User not found");
-  console.log("verify user", user);
-  user.verificationToken = false;
+  user.verificationToken = null;
   user.verify = true;
   await user.save();
 

@@ -43,6 +43,18 @@ const userSchema = new Schema(
   }
 );
 
+// Middleware, яке динамічно змінює валідацію verificationToken
+userSchema.pre("validate", function (next) {
+  if (this.verify) {
+    // Якщо користувач верифікований, зніміть вимогу до verificationToken
+    this.constructor.schema.path("verificationToken").required(false);
+  } else {
+    // Якщо користувач не верифікований, залиште verificationToken як обов'язкове поле
+    this.constructor.schema.path("verificationToken").required(true);
+  }
+  next();
+});
+
 userSchema.pre("save", async function (next) {
   if (this.isNew) {
     const emailHash = crypto.createHash("md5").update(this.email).digest("hex");
