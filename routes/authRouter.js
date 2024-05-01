@@ -14,16 +14,23 @@ import {
   register,
   updateMyAvatar,
   updateUserSubscription,
+  verifyEmail,
+  resendVerificationEmail,
 } from "../controllers/authController.js";
 import {
   loginUserSchema,
   registerUserSchema,
   subscriptionUserSchema,
+  verifySchema,
 } from "../schemas/usersSchemas.js";
 
 const authRouter = Router();
 
 authRouter.get("/current", protect, checkRegisterToken, getCurrentUser);
+
+authRouter.get("/verify/:verificationToken", verifyEmail);
+
+authRouter.post("/verify", verifySchema, resendVerificationEmail);
 
 authRouter.patch(
   "/avatars",

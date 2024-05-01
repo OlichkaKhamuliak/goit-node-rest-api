@@ -1,9 +1,10 @@
 import multer from "multer";
-import HttpError from "../helpers/HttpError.js";
 import { v4 } from "uuid";
 import path from "path";
 import * as fse from "fs-extra";
 import sharp from "sharp";
+
+import HttpError from "../helpers/HttpError.js";
 
 export class ImageService {
   static initUploadImageMiddleware(fieldName, maxFileSizeMB) {
@@ -51,7 +52,7 @@ export class ImageService {
     await fse.move(path.join(tmpDir, fileName), userAvatarPath);
 
     // Construct avatar URL
-    const avatarURL = `/avatars/${pathSegments[0]}_${fileName}`;
+    const avatarURL = `/avatars/${pathSegments}_${fileName}`;
 
     return avatarURL;
   }

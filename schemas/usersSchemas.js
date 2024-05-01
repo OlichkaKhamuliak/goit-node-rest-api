@@ -28,3 +28,9 @@ export const subscriptionUserSchema = validateBody(
       subscription: Joi.string().valid(...Object.values(userSubscription)),
     })
 );
+
+export const verifySchema = validateBody(
+  Joi.object().options({ abortEarly: false }).keys({
+    email: Joi.string().email().trim().required(),
+  })
+);

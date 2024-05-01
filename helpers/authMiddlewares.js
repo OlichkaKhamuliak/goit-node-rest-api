@@ -5,7 +5,7 @@ import {
 } from "../services/userService.js";
 import HttpError from "./HttpError.js";
 import { catchAsync } from "./catchAsync.js";
-import { ImageService } from "../services/ImageService.js";
+import { ImageService } from "../services/imageService.js";
 
 export const checkRegisterData = catchAsync(async (req, _, next) => {
   const userExists = await checkUserExistsService({ email: req.body.email });
